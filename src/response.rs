@@ -3,7 +3,7 @@ use indicatif::ParallelProgressIterator;
 use nalgebra::DMatrix;
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::ops::{Deref, Mul};
+use std::ops::{Deref, Index, Mul};
 
 type CMat = DMatrix<if64>;
 
@@ -62,6 +62,14 @@ impl MIMO {
             .singular_values
             .as_slice()
             .to_vec()
+    }
+    /// Returns the left singular modes and the singular values
+    /// of the [MIMO] frequency response matrix
+    pub fn left_singular_modes(&self) -> (CMat, Vec<f64>) {
+        let svd = self.frequency_response.clone().svd(true, false);
+        let s = svd.singular_values.as_slice().to_vec();
+        let u = svd.u.unwrap();
+        (u, s)
     }
 }
 
@@ -125,6 +133,14 @@ impl Mul<&Sys> for CMat {
         // rhs.iter().map(|mimo| &self * mimo).collect()
         let mimos: Vec<MIMO> = rhs.par_iter().progress().map(|mimo| &self * mimo).collect();
         Sys(mimos)
+    }
+}
+
+impl Index<usize> for Sys {
+    type Output = MIMO;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.0[index]
     }
 }
 
