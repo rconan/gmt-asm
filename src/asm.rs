@@ -1,5 +1,3 @@
-use std::str::RSplitTerminator;
-
 use crate::{
     BesselFilter, BuilderTrait, FirstOrderLowPass, FrequencyResponse, PICompensator, Structural,
     StructuralError, if64, structural::StructuralBuilder,

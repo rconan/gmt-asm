@@ -1,5 +1,5 @@
 use crate::if64;
-use indicatif::{ParallelProgressIterator, ProgressBar};
+use indicatif::ParallelProgressIterator;
 use nalgebra::DMatrix;
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};

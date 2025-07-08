@@ -206,7 +206,7 @@ impl StructuralBuilder {
             println!("building structural from FEM");
             let mut fem = FEM::from_env()?;
             fem.switch_inputs(Switch::Off, None)
-                .switch_inputs_by_name((self.inputs.clone()), Switch::On)?
+                .switch_inputs_by_name(self.inputs.clone(), Switch::On)?
                 .switch_outputs(Switch::Off, None)
                 .switch_outputs_by_name(self.outputs.clone(), Switch::On)?;
             let b =
