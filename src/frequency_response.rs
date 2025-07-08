@@ -31,6 +31,11 @@ impl From<Vec<f64>> for Frequencies {
         Frequencies::Set(value)
     }
 }
+impl From<&Vec<f64>> for Frequencies {
+    fn from(value: &Vec<f64>) -> Self {
+        Frequencies::Set(value.clone())
+    }
+}
 impl Frequencies {
     pub fn logspace(lower: f64, upper: f64, n: usize) -> Self {
         Self::LogSpace { lower, upper, n }

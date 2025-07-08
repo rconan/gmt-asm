@@ -1295,6 +1295,7 @@ dependencies = [
  "num-complex",
  "rayon",
  "serde",
+ "serde-pickle 1.2.0",
  "tar",
  "thiserror 2.0.12",
 ]

@@ -14,7 +14,7 @@ fn main() -> anyhow::Result<()> {
     //     .expect("AWS_BATCH_JOB_ARRAY_INDEX env var missing")
     //     .parse::<usize>()
     //     .expect("AWS_BATCH_JOB_ARRAY_INDEX parsing failed");
-    let nu = 1;
+    let nu: Vec<_> = (1..2000).map(|x| x as f64).collect();
 
     let sid = 1;
     let sim_sampling_frequency = 8e3_f64;
@@ -53,11 +53,11 @@ fn main() -> anyhow::Result<()> {
 
     println!("Evaluating ASM transfer function ...");
     let now = Instant::now();
-    let sys: Sys = asm.fem().frequency_response(nu as f64).into();
+    let sys: Sys = asm.fem().frequency_response(&nu ).into();
     println!(" completed in {}s", now.elapsed().as_secs());
 
     let repo = env::var("DATA_REPO").expect("DATA_REPO not set");
-    let path = Path::new(&repo).join(format!("{}_sys{:04}.bin", file_name, nu));
+    let path = Path::new(&repo).join(format!("{}_sys_1..{:}.bin", file_name, nu.last().unwrap()));
     let file = File::create(path)?;
     let mut buffer = BufWriter::new(file);
     bincode::serde::encode_into_std_write(&sys, &mut buffer, config::standard())?;

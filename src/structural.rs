@@ -205,12 +205,10 @@ impl StructuralBuilder {
         } else {
             println!("building structural from FEM");
             let mut fem = FEM::from_env()?;
-            println!("{fem}");
             fem.switch_inputs(Switch::Off, None)
                 .switch_inputs_by_name((self.inputs.clone()), Switch::On)?
                 .switch_outputs(Switch::Off, None)
                 .switch_outputs_by_name(self.outputs.clone(), Switch::On)?;
-            println!("{fem}");
             let b =
                 DMatrix::<f64>::from_row_slice(fem.n_modes(), fem.n_inputs(), &fem.inputs2modes())
                     .map(|x| Complex::new(x, 0f64));
