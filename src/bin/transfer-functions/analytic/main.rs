@@ -1,4 +1,4 @@
-use bincode::config::{self, Config};
+use bincode::config::{self};
 use gmt_asm::{ASM, BuilderTrait, FrequencyResponse, Sys};
 use std::{env, fs::File, io::BufWriter, path::Path, time::Instant};
 
@@ -14,9 +14,17 @@ fn main() -> anyhow::Result<()> {
     //     .expect("AWS_BATCH_JOB_ARRAY_INDEX env var missing")
     //     .parse::<usize>()
     //     .expect("AWS_BATCH_JOB_ARRAY_INDEX parsing failed");
-    let nu: Vec<_> = (1..2000).map(|x| x as f64).collect();
+    let mut nu = vec![];
+    let mut nu0 = 150f64;
+    loop {
+        if nu0 > 200f64 {
+            break;
+        }
+        nu.push(nu0);
+        nu0 += 0.1;
+    }
 
-    let sid = 1;
+    // let sid = 1;
     let sim_sampling_frequency = 8e3_f64;
     let mut file_name = String::from("asm-structural");
 
@@ -53,11 +61,11 @@ fn main() -> anyhow::Result<()> {
 
     println!("Evaluating ASM transfer function ...");
     let now = Instant::now();
-    let sys: Sys = asm.fem().frequency_response(&nu ).into();
+    let sys: Sys = asm.fem().frequency_response(&nu).into();
     println!(" completed in {}s", now.elapsed().as_secs());
 
     let repo = env::var("DATA_REPO").expect("DATA_REPO not set");
-    let path = Path::new(&repo).join(format!("{}_sys_1..{:}.bin", file_name, nu.last().unwrap()));
+    let path = Path::new(&repo).join(format!("{}_sys_150..200_10th.bin", file_name));
     let file = File::create(path)?;
     let mut buffer = BufWriter::new(file);
     bincode::serde::encode_into_std_write(&sys, &mut buffer, config::standard())?;
